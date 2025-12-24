@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>GBA Browser Emulator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      background: #111;
+      color: #eee;
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+    canvas {
+      image-rendering: pixelated;
+      border: 4px solid #555;
+      margin-top: 1em;
+    }
+    input {
+      margin-top: 1em;
+    }
+  </style>
+</head>
+<body>
+  <h1>Game Boy Advance Emulator</h1>
+  <p>Load a legally owned .gba ROM</p>
+  <input type="file" id="rom" accept=".gba">
+  <canvas id="screen" width="240" height="160"></canvas>
+
+  <script type="module">
+    import init, { GBA } from "https://cdn.jsdelivr.net/gh/pixelkat5/gbajs3@main/gbajs3.js";
+
+    const canvas = document.getElementById("screen");
+    let gba;
+
+    document.getElementById("rom").addEventListener("change", async e => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const romBuffer = await file.arrayBuffer();
+      await init();
+
+      if (gba) gba.stop();
+      gba = new GBA({ canvas, rom: romBuffer });
+      gba.start();
+    });
+  </script>
+</body>
+</html>
